@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\VendorController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\UserDashboardController;
+use App\Http\Controllers\Frontend\UserProfileController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,8 +32,12 @@ Route::get('admin/login', [AdminController::class, 'login'])->middleware('guest'
 
 Route::group(['middleware' => ['auth', 'verified'],
                'prefix' => 'user',
-               'name' => 'user.'             
+            //    'name' => 'user.'   
+                'as' => 'user.'             
+
             ], function(){
                 Route::get('dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
-
+                Route::get('profile', [UserProfileController::class, 'index'])->name('profile');
+                Route::put('profile/update', [UserProfileController::class, 'updateUserProfile'])->name('profile.update');
+                Route::put('profile/update/password', [UserProfileController::class, 'updateUserPassword'])->name('password.update');
             });

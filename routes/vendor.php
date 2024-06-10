@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\VendorController;
+use App\Http\Controllers\Backend\VendorProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -10,3 +11,6 @@ use Illuminate\Support\Facades\Route;
 
 // 2ND WAY
 Route::get('dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
+Route::get('profile', [VendorProfileController::class, 'index'])->name('profile');
+Route::put('profile/update', [VendorProfileController::class, 'updateVendorProfile'])->name('profile.update');
+Route::put('profile/update/password', [VendorProfileController::class, 'updateVendorPassword'])->name('password.update');

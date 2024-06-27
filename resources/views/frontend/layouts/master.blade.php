@@ -53,7 +53,7 @@
     <!--==========================
         POP UP START
     ===========================-->
-    <!-- <section id="wsus__pop_up">
+    {{-- <section id="wsus__pop_up">
         <div class="wsus__pop_up_center">
             <div class="wsus__pop_up_text">
                 <span id="cross"><i class="fas fa-times"></i></span>
@@ -74,7 +74,7 @@
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>  --}}
     <!--==========================
         POP UP END
     ===========================-->

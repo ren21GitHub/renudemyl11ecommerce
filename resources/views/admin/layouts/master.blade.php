@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="{{asset('backend/assets/css/bootstrap-iconpicker.min.css')}}">
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{asset('backend/assets/css/style.css')}}">
@@ -78,6 +79,9 @@
   <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/2.0.8/js/dataTables.bootstrap5.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  {{-- Bootstrap Iconpicker Bundle --}}
+  <script src="{{asset('backend/assets/js/bootstrap-iconpicker.bundle.min.js')}}"></script>
 
   <!-- Page Specific JS File -->
   <script src="{{asset('backend/assets/js/page/index-0.js')}}"></script>
@@ -126,7 +130,10 @@
             $.ajax({
               type: 'DELETE',
               url: deleteUrl,
-
+              data: {
+                _token: "{{ csrf_token() }}",
+              },
+              dataType: 'json',
               success: function(data){
                 // console.log(data);
                 if(data.status == 'success'){
@@ -137,12 +144,13 @@
                   ).then((result)=>{
                     window.location.reload();
                   });
-                }/* else if(data.status == 'error'){
+                }else if(data.status == 'error'){
                   Swal.fire(
                     'Cant Delete!',
-                    data.message
+                    data.message,
+                    'error'
                   );
-                } */
+                }
               },
               error: function(xhr, status, error){
                 console.log(error);

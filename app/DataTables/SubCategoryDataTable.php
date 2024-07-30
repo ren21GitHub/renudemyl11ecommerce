@@ -86,8 +86,8 @@ class SubCategoryDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id')->width(60),
-            Column::make('category')->width(150),
+            Column::make('id'),
+            Column::make('category'),
             Column::make('name'),
             Column::make('slug'),
             Column::make('status'),
@@ -96,7 +96,7 @@ class SubCategoryDataTable extends DataTable
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
-                  ->width(150)
+                  ->width(200)
                   ->addClass('text-center'),
         ];
     }

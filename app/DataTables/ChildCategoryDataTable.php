@@ -99,7 +99,7 @@ class ChildCategoryDataTable extends DataTable
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
-                  ->width(150)
+                  ->width(200)
                   ->addClass('text-center'),
         ];
     }

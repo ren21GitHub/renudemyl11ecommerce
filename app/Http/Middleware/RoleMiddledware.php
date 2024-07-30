@@ -15,8 +15,17 @@ class RoleMiddledware
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        if($request->user()->role !==   $role){
-             return redirect()->route('user.dashboard');
+        // if($request->user()->role !==   $role){
+        //      return redirect()->route('user.dashboard');
+        // }
+        if($request->user()->role !== $role){
+            if($request->user()->role === 'admin'){
+                return redirect()->route('admin.dashboard');
+            }elseif($request->user()->role === 'vendor'){
+                return redirect()->route('vendor.dashboard');
+            }elseif($request->user()->role === 'user'){
+                return redirect()->route('user.dashboard');
+            }
         }
         return $next($request);
     }

@@ -30,7 +30,7 @@ Route::get('admin/login', [AdminController::class, 'login'])->middleware('guest'
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::group(['middleware' => ['auth', 'verified'],
+Route::group(['middleware' => ['auth', 'verified', 'role:user'],
                'prefix' => 'user',
             //    'name' => 'user.'   
                 'as' => 'user.'             

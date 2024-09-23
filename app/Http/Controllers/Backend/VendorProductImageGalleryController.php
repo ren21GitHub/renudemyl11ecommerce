@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\DataTables\ProductImageGalleryDataTable;
+use App\DataTables\VendorProductImageGalleryDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImageGallery;
@@ -10,22 +10,22 @@ use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ProductImageGalleryController extends Controller
+class VendorProductImageGalleryController extends Controller
 {
     use ImageUploadTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, ProductImageGalleryDataTable $dataTable)
+    public function index(Request $request, VendorProductImageGalleryDataTable $dataTable)
     {
         $product = Product::findOrFail($request->product);
-        
+
         /* Check if its owner's product */
         if($product->vendor_id !== Auth::user()->vendor->id){
             abort(404);
         }
 
-        return $dataTable->render('admin.product.image-gallery.index', compact('product'));
+        return $dataTable->render('vendor.product.image-gallery.index', compact('product'));
     }
 
     /**
@@ -41,7 +41,6 @@ class ProductImageGalleryController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'image.*' => ['required', 'image', 'max:2048']
         ]);
@@ -56,7 +55,7 @@ class ProductImageGalleryController extends Controller
             $productImageGallery->save();
         }
 
-        toastr('Uploaded Successfully!');
+        toastr('Vendor Image Uploaded Successfully!');
 
         return redirect()->back();
     }
@@ -91,6 +90,12 @@ class ProductImageGalleryController extends Controller
     public function destroy(string $id)
     {
         $productImageGallery = ProductImageGallery::findOrFail($id);
+        
+        /* Check if its owner's product image*/
+        if($productImageGallery->product->vendor_id !== Auth::user()->vendor->id){
+            abort(404);
+        }
+
         $this->deleteImage($productImageGallery->image);
         $productImageGallery->delete(); 
 

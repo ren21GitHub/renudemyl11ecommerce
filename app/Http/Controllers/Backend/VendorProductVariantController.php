@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\DataTables\ProductVariantDataTable;
+use App\DataTables\VendorProductVariantDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -10,12 +10,12 @@ use App\Models\ProductVariantItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ProductVariantController extends Controller
+class VendorProductVariantController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, ProductVariantDataTable $dataTable)
+    public function index(Request $request ,VendorProductVariantDataTable $dataTable)
     {
         $product = Product::findOrFail($request->product);
 
@@ -24,15 +24,15 @@ class ProductVariantController extends Controller
             abort(404);
         }
 
-        return $dataTable->render('admin.product.variant.index', compact('product'));
+        return $dataTable->render('vendor.product.variant.index', compact('product'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.product.variant.create');
+        return view('vendor.product.variant.create');
     }
 
     /**
@@ -40,22 +40,25 @@ class ProductVariantController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
-            'product' => ['required', 'integer'],
             'name' => ['required', 'max:200'],
+            'product' => ['required', 'integer'],
             'status' => ['required']
         ]);
 
         $productVariant = new ProductVariant();
 
-        $productVariant->product_id = $request->product;
         $productVariant->name = $request->name;
+        $productVariant->product_id = $request->product;
         $productVariant->status = $request->status;
         $productVariant->save();
 
-        toastr('Variant Created Successfully!', 'success');
+        toastr('Product Variant Created Successfully!', 'success');
 
-        return redirect()->route('admin.products-variant.index', ['product' => $request->product]);
+        // return view('vendor.product.variant.index');
+        return redirect()->route('vendor.products-variant.index', ['product' => $request->product]);
+
     }
 
     /**
@@ -72,7 +75,13 @@ class ProductVariantController extends Controller
     public function edit(string $id)
     {
         $productVariant = ProductVariant::findOrFail($id);
-        return view('admin.product.variant.edit', compact('productVariant'));
+
+        /* Check if its owner's product variant */
+        if($productVariant->product->vendor_id !== Auth::user()->vendor->id){
+            abort(404);
+        }
+
+        return view('vendor.product.variant.edit', compact('productVariant'));
     }
 
     /**
@@ -80,20 +89,26 @@ class ProductVariantController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
         $request->validate([
             'name' => ['required', 'max:200'],
             'status' => ['required']
         ]);
 
         $productVariant = ProductVariant::findOrFail($id);
+
+        /* Check if its owner's product variant */
+        if($productVariant->product->vendor_id !== Auth::user()->vendor->id){
+            abort(404);
+        }
+
         $productVariant->name = $request->name;
         $productVariant->status = $request->status;
         $productVariant->save();
 
-        toastr('Variant Updated Successfully!', 'success');
+        toastr('Product Variant Updated Successfully!', 'success');
 
-        return redirect()->route('admin.products-variant.index', ['product' => $productVariant->product_id]);
+        // return view('vendor.product.variant.index');
+        return redirect()->route('vendor.products-variant.index', ['product' => $productVariant->product_id]);
     }
 
     /**
@@ -102,6 +117,12 @@ class ProductVariantController extends Controller
     public function destroy(string $id)
     {
         $productVariant = ProductVariant::findOrFail($id);
+
+        /* Check if its owner's product variant */
+        if($productVariant->product->vendor_id !== Auth::user()->vendor->id){
+            abort(404);
+        }
+
         $productVariantItemCheck = ProductVariantItem::where('product_variant_id', $productVariant->id)->count();
 
         if($productVariantItemCheck > 0){
